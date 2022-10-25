@@ -1,0 +1,153 @@
+#include <iostream>
+
+using namespace std;
+
+// ---------------------------------------Generic Interface For addition--------------------------------------------
+
+template<typename T>
+class IAdd {
+    protected:
+        T val1;
+        T val2;
+    public:
+        //IAdd(){} // no ctor needed since an interface
+        void setValues(const T &va1, const T &va2) { val1 = va1; val2 = va2;}
+        virtual T& doAddition(T&) = 0;
+};
+
+
+// ----------------------------------------Interface Derving Classes ------------------------------------------------------
+
+
+
+// Primitive Type :- Int
+class intAdd : public IAdd<int>
+{
+    public:
+        intAdd(const int &v1, const int &v2)
+        {
+            setValues(v1,v2);
+        }
+        int& doAddition(int &result) { result = val1 + val2; return result; }
+};
+
+
+// Primitive Type :- double
+class doubleAdd : public IAdd<double>
+{
+    public:
+        doubleAdd(const double &v1,const double &v2)
+        {
+            setValues(v1,v2);
+        }
+        double& doAddition(double &result) { result = val1 + val2; return result; }
+};
+
+
+
+// Primitive Type :- string
+class StringAdd : public IAdd<string>
+{
+    public:
+        StringAdd(const string &v1,const string &v2)
+        {
+            setValues(v1,v2);
+        }
+        string& doAddition(string &result) { result = val1 + val2; return result; }
+};
+
+// user define defination for class userDefined
+class userDefined
+{
+    public:
+        userDefined():data(0) {}
+        userDefined(int ipParam):data(ipParam) {}
+        userDefined(const userDefined& obj) : data(obj.getValue()) {}
+        
+        int getValue() const { return data;}
+        void setValue(const int data) { this->data = data;}
+        userDefined& operator+(userDefined& obj)
+        {
+            this->setValue(this->getValue() + obj.getValue());
+            return *this;
+        }
+        
+        userDefined& operator=(const userDefined& obj)
+        {
+            this->setValue(obj.data);
+            return *this;
+        }
+        
+    private:
+        int data;
+};
+
+
+// user defined datatype :- userDefined
+
+class UserDefTypeAdd : public IAdd<userDefined>
+{
+    public:
+        UserDefTypeAdd(const userDefined& obj1, const userDefined& obj2)
+        {
+            setValues(obj1,obj2);
+        }
+        
+        userDefined& doAddition(userDefined& result) { result = (val1 + val2); return result; }
+}; 
+
+int main()
+{
+    intAdd obj(3,8);
+    int finalIntResult;
+    cout << endl << "Addition Int: " << obj.doAddition(finalIntResult);
+    
+    doubleAdd objDouble(2.5f,4.5f);
+    double finalDResult;
+    cout << endl << "Addition Double: " << objDouble.doAddition(finalDResult);
+    
+    StringAdd objString("abc","dfv");
+    string finalSResult;
+    cout << endl << "Addition String: " << objString.doAddition(finalSResult);
+    
+    userDefined obj1(5);
+    userDefined obj2(5);
+    
+    UserDefTypeAdd objUDT(obj1,obj2);
+    userDefined finalUDTResult;
+    cout << endl << "Addition userDefinedAdd: " << (objUDT.doAddition(finalUDTResult)).getValue();
+
+    return 0;
+}
+
+----------------- Another simple way with Auto keywork ****************
+
+
+#include <iostream>
+#include <string>
+  
+using namespace std;
+int main()
+{
+  
+    // Declare a generalized lambda and store it in sum
+    auto sum = [](auto a, auto b) {
+        return a + b;
+    };
+  
+    // Find sum of two integers
+    cout << sum(1, 6) << endl;
+  
+    // Find sum of two floating numbers
+    cout << sum(1.0, 5.6) << endl;
+  
+    // Find sum of two strings
+    cout << sum(string("Geeks"), string("ForGeeks")) << endl;
+  
+    return 0;
+}
+
+
+
+Regards 
+Rajesh K. Battul
